@@ -18,7 +18,9 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
-      run: dotnet restore Tests/Tests.csproj
+      run: dotnet restore
+    - name: Add Packages
+      run: dotnet add package xunit.core --version 2.4.1
     - name: Build
       run: dotnet build --no-restore
     - name: Test
