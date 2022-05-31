@@ -22,7 +22,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Add Packages
-      run: dotnet add package --version 2.4.1 xunit.core 
+      run: nuget install packages.config
     - name: Build
       run: dotnet build --no-restore
     - name: Test
