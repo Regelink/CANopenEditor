@@ -19,7 +19,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Add Packages
-      run: nuget install Tests/packages.config -OutputDirectory packages
+      run: |
+        nuget install Tests/packages.config -OutputDirectory packages
+        nuget install EDSEditorGUI/packages.config -OutputDirectory packages
     - name: Build
       run: dotnet build --no-restore
     - name: Test
