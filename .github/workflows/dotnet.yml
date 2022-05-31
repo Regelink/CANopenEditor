@@ -12,20 +12,20 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: 5.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Add Packages
-      run: |
-        nuget install Tests/packages.config -OutputDirectory packages
-        nuget install EDSEditorGUI/packages.config -OutputDirectory packages
+#    - name: Setup .NET
+#      uses: actions/setup-dotnet@v2
+#      with:
+#        dotnet-version: 5.0.x
+#    - name: Restore dependencies
+#      run: dotnet restore
+#    - name: Add Packages
+#      run: |
+#        nuget install Tests/packages.config -OutputDirectory packages
+#        nuget install EDSEditorGUI/packages.config -OutputDirectory packages
     - uses: microsoft/setup-msbuild@v1.1
     - name: MSBuild
       run: make all
 #    - name: Build
 #      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+#    - name: Test
+#      run: dotnet test --no-build --verbosity normal
