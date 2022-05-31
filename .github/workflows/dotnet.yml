@@ -18,10 +18,10 @@ jobs:
 #        dotnet-version: 5.0.x
 #    - name: Restore dependencies
 #      run: dotnet restore
-#    - name: Add Packages
-#      run: |
-#        nuget install Tests/packages.config -OutputDirectory packages
-#        nuget install EDSEditorGUI/packages.config -OutputDirectory packages
+    - name: Add Packages
+      run: |
+        nuget install Tests/packages.config -OutputDirectory packages
+        nuget install EDSEditorGUI/packages.config -OutputDirectory packages
     - uses: microsoft/setup-msbuild@v1.1
     - name: MSBuild
       run: make all
