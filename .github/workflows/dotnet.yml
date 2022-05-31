@@ -23,6 +23,6 @@ jobs:
         nuget install Tests/packages.config -OutputDirectory packages
         nuget install EDSEditorGUI/packages.config -OutputDirectory packages
     - name: Build
-      run: dotnet build --no-restore
+      run: make all
     - name: Test
       run: dotnet test --no-build --verbosity normal
