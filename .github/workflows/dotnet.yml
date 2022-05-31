@@ -16,10 +16,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: 5.0.x
-#    A workaround to resolve nuget-issue: https://github.com/dotnet/installer/issues/10171
-    - name: NuGet - Add nuget.org (WORKAROUND)
-      run: dotnet nuget add source https://api.nuget.org/v3/index.json --name nuget.org
+        dotnet-version: 7.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
