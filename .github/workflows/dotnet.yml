@@ -22,7 +22,10 @@ jobs:
       run: |
         nuget install Tests/packages.config -OutputDirectory packages
         nuget install EDSEditorGUI/packages.config -OutputDirectory packages
-    - name: Build
+    - uses: microsoft/setup-msbuild@v1.1
+    - name: MSBuild
       run: make all
+#    - name: Build
+#      run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
