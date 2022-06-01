@@ -9,9 +9,9 @@ on:
 jobs:
   build:
 
-#    runs-on: windows-2019
-    runs-on: windows-latest
-#    runs-on: ubuntu-latest
+    runs-on: windows-2019
+#    runs-on: windows-latest # error MSB3644: The reference assemblies for .NETFramework,Version=v4.5 were not found.
+#    runs-on: ubuntu-latest # Error: setup-msbuild can only be run on Windows runners
     steps:
     - name: Checkout
       uses: actions/checkout@v3
