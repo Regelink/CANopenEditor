@@ -382,7 +382,7 @@ namespace libEDSsharp
                             specialarraylength = string.Format("[{0}]", maxlength);
                         }
 
-                        sb.AppendLine($"/*{od.Index:X4}      */ {objecttypewords,-15} {make_cname(od.parameter_name,od)}{specialarraylength}[{od.Nosubindexes - 1}];");
+                        sb.AppendLine($"/*{od.Index:X4}      */ {objecttypewords,-15} {make_cname(od.parameter_name,od)}[{od.Nosubindexes - 1}]{specialarraylength};");
                     }
                 }
             }
