@@ -1343,10 +1343,10 @@ namespace libEDSsharp
                 default:
                     PDOtype = PDOMappingType.no;
                     break;
-                case libEDSsharp.AccessPDO.r:
+                case libEDSsharp.AccessPDO.t:
                     PDOtype = PDOMappingType.RPDO;
                     break;
-                case libEDSsharp.AccessPDO.t:
+                case libEDSsharp.AccessPDO.r:
                     PDOtype = PDOMappingType.TPDO;
                     break;
                 case libEDSsharp.AccessPDO.tr:
