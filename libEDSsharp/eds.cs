@@ -1283,9 +1283,9 @@ namespace libEDSsharp
             switch (accType)
             {
                 default:
+                case EDSsharp.AccessType.@const:
                     return libEDSsharp.AccessSDO.no;
                 case EDSsharp.AccessType.ro:
-                case EDSsharp.AccessType.@const:
                     return libEDSsharp.AccessSDO.ro;
                 case EDSsharp.AccessType.wo:
                     return libEDSsharp.AccessSDO.wo;
@@ -1302,6 +1302,9 @@ namespace libEDSsharp
             {
                 default:
                     accesstype = EDSsharp.AccessType.UNKNOWN;
+                    break;
+                case libEDSsharp.AccessSDO.no:
+                    accesstype = EDSsharp.AccessType.@const;
                     break;
                 case libEDSsharp.AccessSDO.ro:
                     accesstype = EDSsharp.AccessType.ro;
