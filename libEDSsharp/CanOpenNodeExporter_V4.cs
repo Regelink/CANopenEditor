@@ -1141,6 +1141,8 @@ OD_t *{0} = &_{0};", odname, string.Join(",\n    ", ODList)));
             if (cTypeString)
                 attributes.Add("ODA_STR");
 
+            if (attributes.Count == 0) attributes.Add("0");
+
             return string.Join(" | ", attributes);
         }
         #endregion
