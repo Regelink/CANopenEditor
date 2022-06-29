@@ -307,22 +307,45 @@ namespace libEDSsharp
                 config.Index = slot.ConfigurationIndex;
                 config.datatype = DataType.PDO_COMMUNICATION_PARAMETER;
                 config.objecttype = ObjectType.REC;
-
-                ODentry sub = new ODentry("max sub-index", (ushort)slot.ConfigurationIndex, 0);
-                sub.defaultvalue = "6";
-                sub.datatype = DataType.UNSIGNED8;
-                sub.accesstype = EDSsharp.AccessType.ro;
-                config.addsubobject(0x00,sub);
-
+//
+//                ODentry sub = new ODentry("max sub-index", (ushort)slot.ConfigurationIndex, 0);
+//                sub.defaultvalue = "6";
+//                sub.datatype = DataType.UNSIGNED8;
+//                sub.accesstype = EDSsharp.AccessType.ro;
+//                config.addsubobject(0x00,sub);
+//
                 config.accesstype = slot.configAccessType;
                 config.prop.CO_storageGroup = slot.configloc;
 
+				ODentry sub;
 
                 if (slot.isTXPDO())
                 {
 
                     config.parameter_name = "TPDO communication parameter";
                     config.prop.CO_countLabel = "TPDO";
+					config.Description = @"* COB-ID used by RPDO:
+  * bit 31: If set, PDO does not exist / is not valid
+  * bit 30: If set, NO RTR is allowed on this PDO
+  * bit 11-29: set to 0
+  * bit 0-10: 11-bit CAN-ID
+* Transmission type:
+  * Value 0: synchronous (acyclic)
+  * Value 1-240: synchronous (cyclic every (1-240)-th sync)
+  * Value 241-253: not used
+  * Value 254: event-driven (manufacturer-specific)
+  * Value 255: event-driven (device profile and application profile specific)
+* Inhibit time in multiple of 100µs, if the transmission type is set to 254 or 255 (0 = disabled).
+* Event timer interval in ms, if the transmission type is set to 254 or 255 (0 = disabled).
+* SYNC start value
+  * Value 0: Counter of the SYNC message shall not be processed.
+  * Value 1-240: The SYNC message with the counter value equal to this value shall be regarded as the first received SYNC message.";
+                    
+					sub = new ODentry("max sub-index", (ushort)slot.ConfigurationIndex, 0);
+                	sub.defaultvalue = "6";
+                	sub.datatype = DataType.UNSIGNED8;
+                	sub.accesstype = EDSsharp.AccessType.ro;
+                	config.addsubobject(0x00,sub);
 
                     sub = new ODentry("COB-ID used by TPDO", (ushort)slot.ConfigurationIndex, 1);
                     sub.datatype = DataType.UNSIGNED32;
@@ -365,6 +388,22 @@ namespace libEDSsharp
                 {
                     config.parameter_name = "RPDO communication parameter";
                     config.prop.CO_countLabel = "RPDO";
+					config.Description = @"* COB-ID used by RPDO:
+  * bit 31: If set, PDO does not exist / is not valid
+  * bit 11-30: set to 0
+  * bit 0-10: 11-bit CAN-ID
+* Transmission type:
+  * Value 0-240: synchronous, processed after next reception of SYNC object
+  * Value 241-253: not used
+  * Value 254: event-driven (manufacturer-specific)
+  * Value 255: event-driven (device profile and application profile specific)
+* Event timer in ms (0 = disabled) for deadline monitoring.";
+
+					sub = new ODentry("max sub-index", (ushort)slot.ConfigurationIndex, 0);
+					sub.defaultvalue = "5";
+					sub.datatype = DataType.UNSIGNED8;
+					config.addsubobject(0x00, sub);
+                	sub.accesstype = EDSsharp.AccessType.ro;
 
                     sub = new ODentry("COB-ID used by RPDO", (ushort)slot.ConfigurationIndex, 1);
                     sub.datatype = DataType.UNSIGNED32;
@@ -376,7 +415,13 @@ namespace libEDSsharp
                     sub.datatype = DataType.UNSIGNED8;
                     sub.defaultvalue = slot.transmissiontype.ToString();
                     sub.accesstype = EDSsharp.AccessType.rw;
-                    config.addsubobject(0x02, sub);
+
+					sub = new ODentry("Event timer", (ushort)slot.ConfigurationIndex, 3);
+					sub.datatype = DataType.UNSIGNED16;
+					sub.defaultvalue = "0";// slot.transmissiontype.ToString();
+					config.addsubobject(0x05, sub);
+                    sub.accesstype = EDSsharp.AccessType.rw;
+
                 }
 
                 eds.ods.Add(slot.ConfigurationIndex,config);
@@ -391,6 +436,16 @@ namespace libEDSsharp
                 else
                     mapping.parameter_name = "RPDO mapping parameter";
 
+				mapping.Description = @"* Number of mapped application objects in PDO:
+  * Value 0: mapping is disabled.
+  * Value 1: sub-index 0x01 is valid.
+  * Value 2-8: sub-indexes 0x01 to (0x02 to 0x08) are valid.
+* Application object 1-8:
+  * bit 16-31: index
+  * bit 8-15: sub-index
+  * bit 0-7: data length in bits";
+
+
                 mapping.prop.CO_storageGroup = slot.mappingloc;
                 mapping.accesstype = slot.mappingAccessType;
 
@@ -401,18 +456,39 @@ namespace libEDSsharp
                 mapping.addsubobject(0x00, sub);
 
                 byte mappingcount = 1;
-                foreach (ODentry mapslot in slot.Mapping)
-                {
-                    sub = new ODentry(String.Format("Mapped object {0:x}",mappingcount), (ushort)slot.MappingIndex, mappingcount);
-                    sub.datatype = DataType.UNSIGNED32;
-                    sub.defaultvalue = string.Format("0x{0:x4}{1:x2}{2:x2}", mapslot.Index, mapslot.Subindex, mapslot.Sizeofdatatype());
-                    sub.accesstype = EDSsharp.AccessType.rw;
-                    mapping.addsubobject(mappingcount, sub);
+				//foreach (ODentry mapslot in slot.Mapping)
+				//{
+				//	sub = new ODentry(String.Format("Mapped object {0:x}", mappingcount), (ushort)slot.MappingIndex, mappingcount);
+				//	sub.datatype = DataType.UNSIGNED32;
+				//	sub.defaultvalue = string.Format("0x{0:x4}{1:x2}{2:x2}", mapslot.Index, mapslot.Subindex, mapslot.Sizeofdatatype());
+				//	sub.accesstype = EDSsharp.AccessType.rw;
+				//	mapping.addsubobject(mappingcount, sub);
 
-                    mappingcount++;
+				//	mappingcount++;
 
-                }
-                eds.ods.Add(slot.MappingIndex,mapping);
+				//}
+
+				for (int i = 0; i < 8; ++i)
+				{
+					sub = new ODentry(String.Format("Mapped object {0:x}", mappingcount), (ushort)slot.MappingIndex, mappingcount);
+					sub.datatype = DataType.UNSIGNED32;
+
+					if (i < slot.Mapping.Count)
+					{
+						ODentry mapslot = slot.Mapping[i];
+						sub.defaultvalue = string.Format("0x{0:x4}{1:x2}{2:x2}", mapslot.Index, mapslot.Subindex, mapslot.Sizeofdatatype());
+					}
+					else
+					{
+						sub.defaultvalue = string.Format("0x{0:x4}{1:x2}{2:x2}", 0, 0, 0);
+					}
+					sub.accesstype = EDSsharp.AccessType.rw;
+					mapping.addsubobject(mappingcount, sub);
+					mappingcount++;
+
+				}
+
+				eds.ods.Add(slot.MappingIndex,mapping);
                
             }
         }
@@ -437,9 +513,10 @@ namespace libEDSsharp
 
             PDOSlot newslot = new PDOSlot();
             newslot.ConfigurationIndex = configindex;
-
-
-            newslot.COB = 0x180; //Fixme need a better default???
+			if(isTXPDO)
+				newslot.COB = 0x180; //Fixme need a better default???
+			else
+				newslot.COB = 0x200;
 
             pdoslots.Add(newslot);
 
